@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>图片展示 - JPG Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .image-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .image-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-card:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .zoom-icon {
+            color: white;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .download-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .image-card:hover .download-overlay {
+            opacity: 1;
+        }
+
+        .download-overlay:hover {
+            background: rgba(76, 175, 80, 1);
+            transform: scale(1.05);
+        }
+
+        .image-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .image-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .image-description {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .header-info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-image-container {
+            position: relative;
+            width: 100%;
+            height: 80%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        .modal-image-container:active {
+            cursor: grabbing;
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease-out;
+            transform-origin: center center;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .modal-info {
+            color: white;
+            text-align: center;
+            margin-top: 15px;
+            padding: 0 20px;
+            z-index: 10001;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .modal-description {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        /* 关闭按钮 */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #fff;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10002;
+            background: rgba(0, 0, 0, 0.5);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .close:hover,
+        .close:active {
+            background: rgba(255, 107, 107, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* 导航按钮 */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            font-size: 28px;
+            padding: 20px 25px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 10001;
+            min-width: 60px;
+            min-height: 60px;
+        }
+
+        .nav-btn:hover,
+        .nav-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev {
+            left: 20px;
+        }
+
+        .next {
+            right: 20px;
+        }
+
+        /* 控制面板 */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            z-index: 10001;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 50px;
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .control-btn:hover,
+        .control-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .download-btn {
+            background: rgba(76, 175, 80, 0.8);
+        }
+
+        .download-btn:hover,
+        .download-btn:active {
+            background: rgba(76, 175, 80, 1);
+        }
+
+        /* 缩放指示器 */
+        .zoom-indicator {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            z-index: 10001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .zoom-indicator.show {
+            opacity: 1;
+        }
+
+        /* 提示信息 */
+        .hint {
+            position: absolute;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            text-align: center;
+            z-index: 10001;
+            opacity: 0.7;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 5px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .image-wrapper {
+                height: 200px;
+            }
+            
+            .image-info {
+                padding: 15px;
+            }
+            
+            .nav-btn {
+                padding: 15px 20px;
+                font-size: 24px;
+                min-width: 50px;
+                min-height: 50px;
+            }
+            
+            .prev {
+                left: 10px;
+            }
+            
+            .next {
+                right: 10px;
+            }
+            
+            .close {
+                top: 10px;
+                right: 10px;
+                font-size: 30px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .controls {
+                bottom: 20px;
+                padding: 12px 15px;
+                max-width: 320px;
+            }
+            
+            .control-btn {
+                flex: 1;
+                min-width: 60px;
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .zoom-indicator {
+                top: 70px;
+                right: 15px;
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            
+            .hint {
+                bottom: 160px;
+                font-size: 12px;
+                padding: 0 20px;
+            }
+            
+            .download-overlay {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 图片计数器 */
+        .image-counter {
+            position: absolute;
+            top: 15px;
+            left: 70px;
+            color: white;
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            z-index: 10001;
+        }
+
+        /* 错误信息 */
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff4444;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+            display: none;
+        }
+
+        /* 下载进度提示 */
+        .download-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            z-index: 20000;
+            display: none;
+            text-align: center;
+        }
+
+        .download-toast.show {
+            display: block;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 宇宙超级无敌大</h1>
+        <div class="header-info">
+            共展示 <strong>7</strong> 张精美图片 | 目录: /home/xhh/web/src/public/jpg/
+            <br><small>💡 点击图片可以放大查看，支持鼠标滚轮和手势操作，右上角可下载原图</small>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="gallery">
+            <!-- 图片列表 -->
+            <div class="image-card" onclick="openModal(0)">
+                <div class="image-wrapper">
+                    <img src="./jpg/3-1.png" alt="图片 3-1" onerror="handleImageError(this, '3-1.png')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(0)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">3-1.png</div>
+                    <div class="image-description">第一张精美图片，展示了独特的视觉艺术效果。</div>
+                </div>
+            </div>
+
+            <div class="image-card" onclick="openModal(1)">
+                <div class="image-wrapper">
+                    <img src="./jpg/3-2.png" alt="图片 3-2" onerror="handleImageError(this, '3-2.png')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(1)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">3-2.png</div>
+                    <div class="image-description">第二张精美图片，呈现了别样的色彩与构图之美。</div>
+                </div>
+            </div>
+
+            <div class="image-card" onclick="openModal(2)">
+                <div class="image-wrapper">
+                    <img src="./jpg/3-3.png" alt="图片 3-3" onerror="handleImageError(this, '3-3.png')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(2)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">3-3.png</div>
+                    <div class="image-description">第三张精美图片，捕捉了光影交错的动人瞬间。</div>
+                </div>
+            </div>
+
+            <div class="image-card" onclick="openModal(3)">
+                <div class="image-wrapper">
+                    <img src="./jpg/3-4.png" alt="图片 3-4" onerror="handleImageError(this, '3-4.png')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(3)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">3-4.png</div>
+                    <div class="image-description">第四张精美图片，展现了丰富的层次与质感。</div>
+                </div>
+            </div>
+
+            <div class="image-card" onclick="openModal(4)">
+                <div class="image-wrapper">
+                    <img src="./jpg/3-5.png" alt="图片 3-5" onerror="handleImageError(this, '3-5.png')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(4)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">3-5.png</div>
+                    <div class="image-description">第五张精美图片，蕴含着深邃的意境与情感。</div>
+                </div>
+            </div>
+
+            <div class="image-card" onclick="openModal(5)">
+                <div class="image-wrapper">
+                    <img src="./jpg/3-6.png" alt="图片 3-6" onerror="handleImageError(this, '3-6.png')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(5)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">3-6.png</div>
+                    <div class="image-description">第六张精美图片，散发着自然清新的艺术气息。</div>
+                </div>
+            </div>
+
+            <div class="image-card" onclick="openModal(6)">
+                <div class="image-wrapper">
+                    <img src="./jpg/3-7.png" alt="图片 3-7" onerror="handleImageError(this, '3-7.png')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(6)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">3-7.png</div>
+                    <div class="image-description">第七张精美图片，完美收官，展现终极的艺术魅力。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="image-counter">
+            <span id="currentImageIndex">1</span> / <span id="totalImages">7</span>
+        </div>
+        <div class="zoom-indicator" id="zoomIndicator">100%</div>
+        
+        <button class="nav-btn prev" onclick="changeImage(-1)">❮</button>
+        <button class="nav-btn next" onclick="changeImage(1)">❯</button>
+        
+        <div class="modal-content">
+            <div class="modal-image-container" id="imageContainer">
+                <img class="modal-image" id="modalImage" src="" alt="">
+            </div>
+            <div class="modal-info">
+                <div class="modal-title" id="modalTitle"></div>
+                <div class="modal-description" id="modalDescription"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="zoomOut()">🔍-</button>
+            <button class="control-btn" onclick="resetZoom()">↻ 重置</button>
+            <button class="control-btn" onclick="zoomIn()">🔍+</button>
+            <button class="control-btn download-btn" onclick="downloadCurrentImage()">
+                📥 下载原图
+            </button>
+        </div>
+        
+        <div class="hint">
+            💡 鼠标滚轮缩放 | 拖拽移动 | 双击重置 | 左右箭头切换
+        </div>
+    </div>
+
+    <!-- 下载提示 -->
+    <div class="download-toast" id="downloadToast">
+        <div>📥 开始下载...</div>
+        <div style="font-size: 12px; margin-top: 5px; opacity: 0.8;" id="downloadFileName"></div>
+    </div>
+
+    <script>
+        // 图片数据
+        const imageData = [
+            {
+                paths: ['./jpg/3-1.png', '/jpg/3-1.png', 'jpg/3-1.png'],
+                title: "3-1.png",
+                description: "第一张精美图片，展示了独特的视觉艺术效果。",
+                filename: "3-1.png"
+            },
+            {
+                paths: ['./jpg/3-2.png', '/jpg/3-2.png', 'jpg/3-2.png'],
+                title: "3-2.png",
+                description: "第二张精美图片，呈现了别样的色彩与构图之美。",
+                filename: "3-2.png"
+            },
+            {
+                paths: ['./jpg/3-3.png', '/jpg/3-3.png', 'jpg/3-3.png'],
+                title: "3-3.png",
+                description: "第三张精美图片，捕捉了光影交错的动人瞬间。",
+                filename: "3-3.png"
+            },
+            {
+                paths: ['./jpg/3-4.png', '/jpg/3-4.png', 'jpg/3-4.png'],
+                title: "3-4.png",
+                description: "第四张精美图片，展现了丰富的层次与质感。",
+                filename: "3-4.png"
+            },
+            {
+                paths: ['./jpg/3-5.png', '/jpg/3-5.png', 'jpg/3-5.png'],
+                title: "3-5.png",
+                description: "第五张精美图片，蕴含着深邃的意境与情感。",
+                filename: "3-5.png"
+            },
+            {
+                paths: ['./jpg/3-6.png', '/jpg/3-6.png', 'jpg/3-6.png'],
+                title: "3-6.png",
+                description: "第六张精美图片，散发着自然清新的艺术气息。",
+                filename: "3-6.png"
+            },
+            {
+                paths: ['./jpg/3-7.png', '/jpg/3-7.png', 'jpg/3-7.png'],
+                title: "3-7.png",
+                description: "第七张精美图片，完美收官，展现终极的艺术魅力。",
+                filename: "3-7.png"
+            }
+        ];
+
+        let currentIndex = 0;
+        let currentScale = 1;
+        let translateX = 0;
+        let translateY = 0;
+        let isDragging = false;
+        let lastTouchDistance = 0;
+        let lastTouchX = 0;
+        let lastTouchY = 0;
+        
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const imageContainer = document.getElementById('imageContainer');
+        const zoomIndicator = document.getElementById('zoomIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const downloadToast = document.getElementById('downloadToast');
+        const downloadFileName = document.getElementById('downloadFileName');
+
+        // 显示错误信息
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // 显示下载提示
+        function showDownloadToast(filename) {
+            downloadFileName.textContent = `正在下载: ${filename}`;
+            downloadToast.classList.add('show');
+            setTimeout(() => {
+                downloadToast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 处理图片加载错误
+        function handleImageError(img, filename) {
+            console.error('图片加载失败:', img.src);
+            img.style.backgroundColor = '#f5f5f5';
+            img.style.display = 'flex';
+            img.style.alignItems = 'center';
+            img.style.justifyContent = 'center';
+            img.style.color = '#999';
+            img.alt = '图片加载失败: ' + filename;
+            
+            // 尝试其他路径
+            const cardIndex = Array.from(document.querySelectorAll('.image-card')).indexOf(img.closest('.image-card'));
+            if (cardIndex !== -1 && imageData[cardIndex]) {
+                tryNextPath(imageData[cardIndex].paths, 0, img, filename);
+            }
+        }
+
+        // 尝试下一个路径
+        function tryNextPath(paths, index, img, filename) {
+            if (index < paths.length) {
+                img.src = paths[index];
+                img.onerror = () => tryNextPath(paths, index + 1, img, filename);
+            }
+        }
+
+        // 下载单个图片（从缩略图）
+        function downloadImage(index) {
+            console.log('开始下载图片:', index);
+            const data = imageData[index];
+            
+            // 尝试下载，按优先级尝试不同路径
+            tryDownloadWithPaths(data.paths, 0, data.filename);
+        }
+
+        // 下载当前查看的图片
+        function downloadCurrentImage() {
+            console.log('下载当前图片:', currentIndex);
+            const data = imageData[currentIndex];
+            tryDownloadWithPaths(data.paths, 0, data.filename);
+        }
+
+        // 尝试用不同路径下载
+        function tryDownloadWithPaths(paths, index, filename) {
+            if (index >= paths.length) {
+                showError(`无法下载图片: ${filename}，请检查文件路径`);
+                return;
+            }
+
+            const url = paths[index];
+            console.log(`尝试下载路径 ${index + 1}:`, url);
+            
+            // 创建隐藏的下载链接
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename; // 指定下载文件名
+            link.style.display = 'none';
+            
+            // 检查文件是否存在
+            fetch(url, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        // 文件存在，执行下载
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        showDownloadToast(filename);
+                        console.log('下载成功:', filename);
+                    } else {
+                        // 文件不存在，尝试下一个路径
+                        console.log(`路径 ${url} 不存在，尝试下一个...`);
+                        tryDownloadWithPaths(paths, index + 1, filename);
+                    }
+                })
+                .catch(error => {
+                    console.log(`访问路径 ${url} 失败:`, error);
+                    // 网络错误，尝试下一个路径
+                    tryDownloadWithPaths(paths, index + 1, filename);
+                });
+        }
+
+        // 打开模态框
+        function openModal(index) {
+            console.log('尝试打开图片:', index);
+            currentIndex = index;
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            
+            // 预加载图片
+            preloadImage(index).then(success => {
+                if (success) {
+                    updateModalContent();
+                    modal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                    showZoomIndicator();
+                } else {
+                    showError('无法加载图片，请检查文件路径和服务器配置');
+                }
+            });
+        }
+
+        // 预加载图片
+        function preloadImage(index) {
+            return new Promise((resolve) => {
+                const data = imageData[index];
+                const img = new Image();
+                
+                img.onload = () => {
+                    console.log('图片加载成功:', data.paths[0]);
+                    resolve(true);
+                };
+                
+                img.onerror = () => {
+                    console.error('图片加载失败:', data.paths[0]);
+                    resolve(false);
+                };
+                
+                img.src = data.paths[0];
+            });
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            resetZoom();
+        }
+
+        // 切换图片
+        function changeImage(direction) {
+            currentIndex += direction;
+            
+            if (currentIndex >= imageData.length) {
+                currentIndex = 0;
+            } else if (currentIndex < 0) {
+                currentIndex = imageData.length - 1;
+            }
+            
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            
+            preloadImage(currentIndex).then(success => {
+                if (success) {
+                    updateModalContent();
+                    showZoomIndicator();
+                } else {
+                    showError('无法加载图片');
+                    // 回退到上一张图片
+                    currentIndex -= direction;
+                }
+            });
+        }
+
+        // 更新模态框内容
+        function updateModalContent() {
+            const data = imageData[currentIndex];
+            modalImage.src = data.paths[0];
+            modalImage.alt = data.title;
+            applyTransform();
+            
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalDescription').textContent = data.description;
+            document.getElementById('currentImageIndex').textContent = currentIndex + 1;
+            document.getElementById('totalImages').textContent = imageData.length;
+        }
+
+        // 应用变换
+        function applyTransform() {
+            modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            zoomIndicator.textContent = Math.round(currentScale * 100) + '%';
+        }
+
+        // 显示缩放指示器
+        function showZoomIndicator() {
+            zoomIndicator.classList.add('show');
+            setTimeout(() => {
+                zoomIndicator.classList.remove('show');
+            }, 1500);
+        }
+
+        // 放大
+        function zoomIn() {
+            currentScale = Math.min(currentScale * 1.2, 5);
+            applyTransform();
+            showZoomIndicator();
+        }
+
+        // 缩小
+        function zoomOut() {
+            currentScale = Math.max(currentScale / 1.2, 0.5);
+            applyTransform();
+            showZoomIndicator();
+        }
+
+        // 重置缩放
+        function resetZoom() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            applyTransform();
+            showZoomIndicator();
+        }
+
+        // 鼠标滚轮缩放
+        imageContainer.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (e.deltaY < 0) {
+                zoomIn();
+            } else {
+                zoomOut();
+            }
+        }, { passive: false });
+
+        // 触摸事件处理 - 双指缩放
+        imageContainer.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            
+            if (e.touches.length === 2) {
+                lastTouchDistance = getTouchDistance(e.touches[0], e.touches[1]);
+                lastTouchX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                lastTouchY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            } else if (e.touches.length === 1) {
+                isDragging = true;
+                lastTouchX = e.touches[0].clientX;
+                lastTouchY = e.touches[0].clientY;
+            }
+        }, { passive: false });
+
+        imageContainer.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (e.touches.length === 2) {
+                const currentDistance = getTouchDistance(e.touches[0], e.touches[1]);
+                const currentCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                const currentCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                
+                if (lastTouchDistance > 0) {
+                    const scaleChange = currentDistance / lastTouchDistance;
+                    const newScale = Math.max(0.5, Math.min(5, currentScale * scaleChange));
+                    
+                    const deltaX = currentCenterX - lastTouchX;
+                    const deltaY = currentCenterY - lastTouchY;
+                    
+                    translateX = translateX * (newScale / currentScale) + deltaX;
+                    translateY = translateY * (newScale / currentScale) + deltaY;
+                    currentScale = newScale;
+                    
+                    applyTransform();
+                }
+                
+                lastTouchDistance = currentDistance;
+                lastTouchX = currentCenterX;
+                lastTouchY = currentCenterY;
+                
+            } else if (e.touches.length === 1 && isDragging && currentScale > 1) {
+                const deltaX = e.touches[0].clientX - lastTouchX;
+                const deltaY = e.touches[0].clientY - lastTouchY;
+                
+                translateX += deltaX;
+                translateY += deltaY;
+                
+                const maxTranslate = (currentScale - 1) * 200;
+                translateX = Math.max(-maxTranslate, Math.min(maxTranslate, translateX));
+                translateY = Math.max(-maxTranslate, Math.min(maxTranslate, translateY));
+                
+                applyTransform();
+                
+                lastTouchX = e.touches[0].clientX;
+                lastTouchY = e.touches[0].clientY;
+            }
+        }, { passive: false });
+
+        imageContainer.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            isDragging = false;
+            lastTouchDistance = 0;
+        }, { passive: false });
+
+        // 计算两个触摸点之间的距离
+        function getTouchDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        // 鼠标事件处理（桌面端拖拽）
+        let isMouseDown = false;
+
+        imageContainer.addEventListener('mousedown', function(e) {
+            if (currentScale > 1) {
+                isMouseDown = true;
+                lastTouchX = e.clientX;
+                lastTouchY = e.clientY;
+                imageContainer.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+        });
+
+        imageContainer.addEventListener('mousemove', function(e) {
+            if (isMouseDown && currentScale > 1) {
+                const deltaX = e.clientX - lastTouchX;
+                const deltaY = e.clientY - lastTouchY;
+                
+                translateX += deltaX;
+                translateY += deltaY;
+                
+                const maxTranslate = (currentScale - 1) * 200;
+                translateX = Math.max(-maxTranslate, Math.min(maxTranslate, translateX));
+                translateY = Math.max(-maxTranslate, Math.min(maxTranslate, translateY));
+                
+                applyTransform();
+                
+                lastTouchX = e.clientX;
+                lastTouchY = e.clientY;
+            }
+        });
+
+        imageContainer.addEventListener('mouseup', function() {
+            isMouseDown = false;
+            imageContainer.style.cursor = 'grab';
+        });
+
+        imageContainer.addEventListener('mouseleave', function() {
+            isMouseDown = false;
+            imageContainer.style.cursor = 'grab';
+        });
+
+        // 双击重置缩放
+        modalImage.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+            resetZoom();
+        });
+
+        // 键盘事件
+        document.addEventListener('keydown', function(e) {
+            if (modal.style.display === 'block') {
+                switch(e.key) {
+                    case 'Escape':
+                        closeModal();
+                        break;
+                    case 'ArrowLeft':
+                        changeImage(-1);
+                        break;
+                    case 'ArrowRight':
+                        changeImage(1);
+                        break;
+                    case '+':
+                    case '=':
+                        zoomIn();
+                        break;
+                    case '-':
+                        zoomOut();
+                        break;
+                    case '0':
+                        resetZoom();
+                        break;
+                    case 'd':
+                    case 'D':
+                        downloadCurrentImage();
+                        break;
+                }
+            }
+        });
+
+        // 点击模态框背景关闭
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // 阻止默认的触摸行为
+        modal.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // 页面加载完成后检查图片路径
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成，检查图片路径...');
+        });
+    </script>
+</body>
+</html>
