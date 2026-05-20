@@ -586,7 +586,7 @@
 
             <div class="image-card" onclick="openModal(4)">
                 <div class="image-wrapper">
-                    <img src="./jpg/朱家角合照.jpg" alt="图片 3-5" onerror="handleImageError(this, '朱家角合照.jpg')">
+                    <img src="./jpg/朱家角合照.jpg" alt="图片 朱家角合照" onerror="handleImageError(this, '朱家角合照.jpg')">
                     <div class="image-overlay">
                         <div class="zoom-icon">🔍</div>
                     </div>
@@ -595,14 +595,14 @@
                     </button>
                 </div>
                 <div class="image-info">
-                    <div class="image-title">朱家角合照</div>
+                    <div class="image-title">嗯哼</div>
                     <div class="image-description">ao~</div>
                 </div>
             </div>
 
             <div class="image-card" onclick="openModal(5)">
                 <div class="image-wrapper">
-                    <img src="./jpg/3-6.png" alt="图片 3-6" onerror="handleImageError(this, '3-6.png')">
+                    <img src="./jpg/淀山湖彩虹桥.jpg" alt="图片 淀山湖彩虹桥" onerror="handleImageError(this, '淀山湖彩虹桥.jpg')">
                     <div class="image-overlay">
                         <div class="zoom-icon">🔍</div>
                     </div>
@@ -611,14 +611,14 @@
                     </button>
                 </div>
                 <div class="image-info">
-                    <div class="image-title">3-6.png</div>
-                    <div class="image-description">第六张精美图片，散发着自然清新的艺术气息。</div>
+                    <div class="image-title">淀山湖彩虹桥</div>
+                    <div class="image-description">去彩虹桥吹风</div>
                 </div>
             </div>
 
             <div class="image-card" onclick="openModal(6)">
                 <div class="image-wrapper">
-                    <img src="./jpg/3-7.png" alt="图片 3-7" onerror="handleImageError(this, '3-7.png')">
+                    <img src="./jpg/领证1.jpg" alt="图片 领证1" onerror="handleImageError(this, '领证1.jpg')">
                     <div class="image-overlay">
                         <div class="zoom-icon">🔍</div>
                     </div>
@@ -627,8 +627,38 @@
                     </button>
                 </div>
                 <div class="image-info">
-                    <div class="image-title">3-7.png</div>
-                    <div class="image-description">第七张精美图片，完美收官，展现终极的艺术魅力。</div>
+                    <div class="image-title">领证</div>
+                    <div class="image-description">决定相伴一生</div>
+                </div>
+            </div>
+            <div class="image-card" onclick="openModal(7)">
+                <div class="image-wrapper">
+                    <img src="./jpg/领证2.jpg" alt="图片 领证2" onerror="handleImageError(this, '领证2.jpg')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(6)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">领证</div>
+                    <div class="image-description">哈哈</div>
+                </div>
+            </div>
+            <div class="image-card" onclick="openModal(7)">
+                <div class="image-wrapper">
+                    <img src="./jpg/领证手捧花.jpg" alt="图片 领证手捧花" onerror="handleImageError(this, '领证手捧花.jpg')">
+                    <div class="image-overlay">
+                        <div class="zoom-icon">🔍</div>
+                    </div>
+                    <button class="download-overlay" onclick="event.stopPropagation(); downloadImage(6)" title="下载原图">
+                        📥 下载
+                    </button>
+                </div>
+                <div class="image-info">
+                    <div class="image-title">爱的玫瑰</div>
+                    <div class="image-description">哈哈</div>
                 </div>
             </div>
         </div>
@@ -709,17 +739,29 @@
                 filename: "朱家角合照.jpg"
             },
             {
-                paths: ['./jpg/3-6.png', '/jpg/3-6.png', 'jpg/3-6.png'],
-                title: "3-6.png",
+                paths: ['./jpg/淀山湖彩虹桥.jpg', '/jpg/淀山湖彩虹桥.jpg', 'jpg/淀山湖彩虹桥.jpg'],
+                title: "淀山湖彩虹桥.jpg",
                 description: "第六张精美图片，散发着自然清新的艺术气息。",
-                filename: "3-6.png"
+                filename: "淀山湖彩虹桥.jpg"
             },
             {
-                paths: ['./jpg/3-7.png', '/jpg/3-7.png', 'jpg/3-7.png'],
-                title: "3-7.png",
+                paths: ['./jpg/领证1.jpg', '/jpg/领证1.jpg', 'jpg/领证1.jpg'],
+                title: "领证1.jpg",
                 description: "第七张精美图片，完美收官，展现终极的艺术魅力。",
-                filename: "3-7.png"
-            }
+                filename: "领证1.jpg"
+            },
+            {
+                paths: ['./jpg/领证2.jpg', '/jpg/领证2.jpg', 'jpg/领证2.jpg'],
+                title: "领证2.jpg",
+                description: "第七张精美图片，完美收官，展现终极的艺术魅力。",
+                filename: "领证2.jpg"
+            },
+            {
+                paths: ['./jpg/领证手捧花.jpg', '/jpg/领证手捧花.jpg', 'jpg/领证手捧花.jpg'],
+                title: "领证手捧花.jpg",
+                description: "第七张精美图片，完美收官，展现终极的艺术魅力。",
+                filename: "领证手捧花.jpg"
+            },
         ];
 
         let currentIndex = 0;
