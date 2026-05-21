@@ -664,8 +664,8 @@
         </div>
     </div>
 
-    <!-- 模态框 -->
-    <div id="imageModal" class="modal">
+    <!-- 模态框class="modal" -->
+    <div id="imageModal" >
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="image-counter">
             <span id="currentImageIndex">1</span> / <span id="totalImages">7</span>
@@ -679,10 +679,6 @@
             <div class="modal-image-container" id="imageContainer">
                 <img class="modal-image" id="modalImage" src="" alt="">
             </div>
-            <!-- <div class="modal-info">
-                <div class="modal-title" id="modalTitle"></div>
-                <div class="modal-description" id="modalDescription"></div>
-            </div> -->
         </div>
         
         <div class="controls">
@@ -710,56 +706,41 @@
         const imageData = [
             {
                 paths: ['./jpg/tianshengcheng.jpg', '/jpg/tianshengcheng.jpg', 'jpg/tianshengcheng.jpg'],
-                title: "tianshengcheng.jpg",
-                description: "第一张精美图片，展示了独特的视觉艺术效果。",
                 filename: "tianshengcheng.jpg"
             },
             {
                 paths: ['./jpg/划船.jpg', '/jpg/划船.jpg', 'jpg/划船.jpg'],
-                title: "划船.jpg",
-                description: "第二张精美图片，呈现了别样的色彩与构图之美。",
                 filename: "划船.jpg"
             },
             {
                 paths: ['./jpg/朱家角河道.jpg', '/jpg/朱家角河道.jpg', 'jpg/朱家角河道.jpg'],
-                title: "朱家角河道.jpg",
-                description: "第三张精美图片，捕捉了光影交错的动人瞬间。",
                 filename: "朱家角河道.jpg"
             },
             {
                 paths: ['./jpg/我在朱家角很想你.jpg', '/jpg/我在朱家角很想你.jpg', 'jpg/我在朱家角很想你.jpg'],
                 title: "我在朱家角很想你.jpg",
-                description: "第四张精美图片，展现了丰富的层次与质感。",
                 filename: "我在朱家角很想你.jpg"
             },
             {
                 paths: ['./jpg/朱家角合照.jpg', '/jpg/朱家角合照.jpg', 'jpg/朱家角合照.jpg'],
-                title: "朱家角合照.jpg",
-                description: "第五张精美图片，蕴含着深邃的意境与情感。",
                 filename: "朱家角合照.jpg"
             },
             {
                 paths: ['./jpg/淀山湖彩虹桥.jpg', '/jpg/淀山湖彩虹桥.jpg', 'jpg/淀山湖彩虹桥.jpg'],
-                title: "淀山湖彩虹桥.jpg",
-                description: "第六张精美图片，散发着自然清新的艺术气息。",
                 filename: "淀山湖彩虹桥.jpg"
             },
             {
                 paths: ['./jpg/领证1.jpg', '/jpg/领证1.jpg', 'jpg/领证1.jpg'],
-                title: "领证1.jpg",
-                description: "第七张精美图片，完美收官，展现终极的艺术魅力。",
+
                 filename: "领证1.jpg"
             },
             {
                 paths: ['./jpg/领证2.jpg', '/jpg/领证2.jpg', 'jpg/领证2.jpg'],
-                title: "领证2.jpg",
-                description: "第七张精美图片，完美收官，展现终极的艺术魅力。",
+  
                 filename: "领证2.jpg"
             },
             {
                 paths: ['./jpg/领证手捧花.jpg', '/jpg/领证手捧花.jpg', 'jpg/领证手捧花.jpg'],
-                // title: "领证手捧花.jpg",
-                // description: "第七张精美图片，完美收官，展现终极的艺术魅力。",
                 filename: "领证手捧花.jpg"
             },
         ];
