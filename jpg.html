@@ -679,10 +679,10 @@
             <div class="modal-image-container" id="imageContainer">
                 <img class="modal-image" id="modalImage" src="" alt="">
             </div>
-            <div class="modal-info">
+            <!-- <div class="modal-info">
                 <div class="modal-title" id="modalTitle"></div>
                 <div class="modal-description" id="modalDescription"></div>
-            </div>
+            </div> -->
         </div>
         
         <div class="controls">
@@ -955,15 +955,15 @@
 
         // 更新模态框内容
         function updateModalContent() {
-            // const data = imageData[currentIndex];
-            // modalImage.src = data.paths[0];
-            // modalImage.alt = data.title;
-            // applyTransform();
+            const data = imageData[currentIndex];
+            modalImage.src = data.paths[0];
+            modalImage.alt = data.title;
+            applyTransform();
             
-            // document.getElementById('modalTitle').textContent = data.title;
-            // document.getElementById('modalDescription').textContent = data.description;
-            // document.getElementById('currentImageIndex').textContent = currentIndex + 1;
-            // document.getElementById('totalImages').textContent = imageData.length;
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalDescription').textContent = data.description;
+            document.getElementById('currentImageIndex').textContent = currentIndex + 1;
+            document.getElementById('totalImages').textContent = imageData.length;
         }
 
         // 应用变换
