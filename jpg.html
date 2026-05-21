@@ -680,8 +680,8 @@
                 <img class="modal-image" id="modalImage" src="" alt="">
             </div>
             <div class="modal-info">
-                <!-- <div class="modal-title" id="modalTitle"></div>
-                <div class="modal-description" id="modalDescription"></div> -->
+                <div class="modal-title" id="modalTitle"></div>
+                <div class="modal-description" id="modalDescription"></div>
             </div>
         </div>
         
@@ -960,8 +960,8 @@
             modalImage.alt = data.title;
             applyTransform();
             
-            // document.getElementById('modalTitle').textContent = data.title;
-            // document.getElementById('modalDescription').textContent = data.description;
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalDescription').textContent = data.description;
             document.getElementById('currentImageIndex').textContent = currentIndex + 1;
             document.getElementById('totalImages').textContent = imageData.length;
         }
