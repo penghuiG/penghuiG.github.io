@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>图片展示 - JPG Gallery</title>
+    <title>JPG Gallery</title>
     <style>
         * {
             margin: 0;
@@ -679,10 +679,10 @@
             <div class="modal-image-container" id="imageContainer">
                 <img class="modal-image" id="modalImage" src="" alt="">
             </div>
-            <div class="modal-info">
+            <!-- <div class="modal-info">
                 <div class="modal-title" id="modalTitle"></div>
                 <div class="modal-description" id="modalDescription"></div>
-            </div>
+            </div> -->
         </div>
         
         <div class="controls">
@@ -960,8 +960,8 @@
             modalImage.alt = data.title;
             applyTransform();
             
-            document.getElementById('modalTitle').textContent = data.title;
-            document.getElementById('modalDescription').textContent = data.description;
+            // document.getElementById('modalTitle').textContent = data.title;
+            // document.getElementById('modalDescription').textContent = data.description;
             document.getElementById('currentImageIndex').textContent = currentIndex + 1;
             document.getElementById('totalImages').textContent = imageData.length;
         }
