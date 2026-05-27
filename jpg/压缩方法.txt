@@ -1,7 +1,0 @@
-单次执行
-convert jpg/origin/xxx.jpg -resize 600x -quality 60 jpg/thumb/xxx.jpg
-
-批量脚本
-for f in jpg/origin/*.jpg; do
-  convert "$f" -resize 600x -quality 60 "jpg/thumb/$(basename "$f")"
-done
