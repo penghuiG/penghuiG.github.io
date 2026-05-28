@@ -281,19 +281,19 @@ setInterval(updateClock, 1000);
 updateClock();
 
 /* 天气 */
-const xhr = new XMLHttpRequest();
-xhr.open("GET", "https://wttr.in/Shanghai?format=3", true);
-xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-        const t = xhr.responseText.trim();
-        if (t.startsWith("<")) {
-            document.getElementById("weather").textContent = "天气获取异常";
-        } else {
-            document.getElementById("weather").textContent = t;
-        }
-    }
-};
-xhr.send();
+// const xhr = new XMLHttpRequest();
+// xhr.open("GET", "https://wttr.in/Shanghai?format=3", true);
+// xhr.onreadystatechange = function () {
+//     if (xhr.readyState === 4 && xhr.status === 200) {
+//         const t = xhr.responseText.trim();
+//         if (t.startsWith("<")) {
+//             document.getElementById("weather").textContent = "天气获取异常";
+//         } else {
+//             document.getElementById("weather").textContent = t;
+//         }
+//     }
+// };
+// xhr.send();
 
 /* 停留时间 */
 let seconds = 0;
@@ -301,6 +301,18 @@ setInterval(() => {
     seconds++;
     document.getElementById("timeSpent").textContent = seconds;
 }, 1000);
+</script>
+<script>
+const xhr = new XMLHttpRequest();
+xhr.open("GET", "https://wttr.in/Shanghai?format=3", true);
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        const t = xhr.responseText.trim();
+        document.getElementById("weather").textContent =
+            t.startsWith("<") ? "天气获取异常" : t;
+    }
+};
+xhr.send();
 </script>
 </body>
 </html>
