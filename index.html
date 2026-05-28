@@ -281,7 +281,7 @@ setInterval(updateClock, 1000);
 updateClock();
 
 /* 天气 */
-fetch("https://wttr.in/Shanghai?format=%t+%C")
+fetch("https://wttr.in/Shanghai?format=3")
     .then(r => r.text())
     .then(t => document.getElementById("weather").textContent = t)
     .catch(() => document.getElementById("weather").textContent = "获取失败");
