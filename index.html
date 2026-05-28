@@ -303,16 +303,15 @@ setInterval(() => {
 }, 1000);
 </script>
 <script>
-const xhr = new XMLHttpRequest();
-xhr.open("GET", "https://wttr.in/Shanghai?format=3", true);
-xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-        const t = xhr.responseText.trim();
+fetch("https://corsproxy.io/?https://wttr.in/Shanghai?format=3")
+    .then(r => r.text())
+    .then(t => {
         document.getElementById("weather").textContent =
-            t.startsWith("<") ? "天气获取异常" : t;
-    }
-};
-xhr.send();
+            t.includes("<") ? "天气获取异常" : t.trim();
+    })
+    .catch(() => {
+        document.getElementById("weather").textContent = "获取失败";
+    });
 </script>
 </body>
 </html>
