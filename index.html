@@ -250,12 +250,6 @@
             </div>
         </div>
 
-        <!-- 📜 随机一句 -->
-        <!-- <div class="section-title">今日一句</div>
-        <div class="tag" id="quote" style="width:100%; text-align:center;">
-            加载中...
-        </div> -->
-
         <div class="hobbies">
             <h3 class="section-title">兴趣爱好</h3>
             <div class="hobby-tags">
@@ -291,16 +285,6 @@ fetch("https://wttr.in/Shanghai?format=%t+%C")
     .then(r => r.text())
     .then(t => document.getElementById("weather").textContent = t)
     .catch(() => document.getElementById("weather").textContent = "获取失败");
-
-/* 随机一句 */
-// const quotes = [
-//     "别灰心，普普通通也没关系。",
-//     "你不需要向任何人证明你自己。",
-//     "允许自己偶尔停下来。",
-//     "比世人目光还要可怕的是你那颗在意世人目光的心。"
-// ];
-// document.getElementById("quote").textContent =
-//     quotes[Math.floor(Math.random() * quotes.length)];
 
 /* 停留时间 */
 let seconds = 0;
