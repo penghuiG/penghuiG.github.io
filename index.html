@@ -212,12 +212,12 @@
             </div>
         </div>
 
-        <!-- 🕒 当前时间 -->
+        <!-- 🕒 喜欢的明星 -->
         <div class="info-item">
-            <div class="icon">🕒</div>
+            <div class="icon">🎤</div>
             <div class="info-text">
-                <div class="info-label">当前时间</div>
-                <div class="info-value" id="clock">--:--:--</div>
+                <div class="info-label">喜欢的明星</div>
+                <div class="info-value">蔡徐坤</div>
             </div>
         </div>
 
@@ -271,14 +271,6 @@
 </div>
 
 <script>
-/* 时钟 */
-function updateClock() {
-    const now = new Date();
-    document.getElementById("clock").textContent =
-        now.toLocaleTimeString("zh-CN");
-}
-setInterval(updateClock, 1000);
-updateClock();
 
 // 今日运势
 const luck = ["拯救全人类", "躺平", "发呆", "玩游戏", "搬砖", "看电视", "学习", "摆烂"];
