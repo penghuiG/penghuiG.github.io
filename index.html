@@ -221,12 +221,12 @@
             </div>
         </div>
 
-        <!-- 🌤 上海天气 -->
+        <!-- 🎲 今日运势 -->
         <div class="info-item">
-            <div class="icon">🌤️</div>
+            <div class="icon">🎲</div>
             <div class="info-text">
-                <div class="info-label">上海天气</div>
-                <div class="info-value" id="weather">加载中...</div>
+                <div class="info-label">今日运势</div>
+                <div class="info-value" id="luck">点击试试</div>
             </div>
         </div>
 
@@ -280,21 +280,12 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-/* 天气 */
-// const xhr = new XMLHttpRequest();
-// xhr.open("GET", "https://wttr.in/Shanghai?format=3", true);
-// xhr.onreadystatechange = function () {
-//     if (xhr.readyState === 4 && xhr.status === 200) {
-//         const t = xhr.responseText.trim();
-//         if (t.startsWith("<")) {
-//             document.getElementById("weather").textContent = "天气获取异常";
-//         } else {
-//             document.getElementById("weather").textContent = t;
-//         }
-//     }
-// };
-// xhr.send();
-
+// 今日运势
+const luck = ["宜躺平", "宜拍照", "宜发呆", "宜想念", "宜关机"];
+document.getElementById("luck").onclick = () => {
+    document.getElementById("luck").textContent =
+        luck[Math.floor(Math.random() * luck.length)];
+};
 /* 停留时间 */
 let seconds = 0;
 setInterval(() => {
@@ -302,16 +293,6 @@ setInterval(() => {
     document.getElementById("timeSpent").textContent = seconds;
 }, 1000);
 </script>
-<script>
-fetch("https://corsproxy.io/?https://wttr.in/Shanghai?format=3")
-    .then(r => r.text())
-    .then(t => {
-        document.getElementById("weather").textContent =
-            t.includes("<") ? "天气获取异常" : t.trim();
-    })
-    .catch(() => {
-        document.getElementById("weather").textContent = "获取失败";
-    });
-</script>
+
 </body>
 </html>
