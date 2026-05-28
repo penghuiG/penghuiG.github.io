@@ -281,10 +281,19 @@ setInterval(updateClock, 1000);
 updateClock();
 
 /* 天气 */
-fetch("https://wttr.in/shanghai?format=%t+%C")
-    .then(r => r.text())
-    .then(t => document.getElementById("weather").textContent = t)
-    .catch(() => document.getElementById("weather").textContent = "获取失败");
+const xhr = new XMLHttpRequest();
+xhr.open("GET", "https://wttr.in/Shanghai?format=3", true);
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        const t = xhr.responseText.trim();
+        if (t.startsWith("<")) {
+            document.getElementById("weather").textContent = "天气获取异常";
+        } else {
+            document.getElementById("weather").textContent = t;
+        }
+    }
+};
+xhr.send();
 
 /* 停留时间 */
 let seconds = 0;
