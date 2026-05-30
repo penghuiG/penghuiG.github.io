@@ -412,7 +412,10 @@
             <!-- JS 动态渲染 -->
         </div>
     </div>
-
+    <audio id="bgMusic" loop>
+        <source src="muc/我对缘分小心翼翼.mp3" type="audio/mpeg">
+        你的浏览器不支持音频播放
+    </audio>
     <!-- 模态框 -->
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
@@ -544,6 +547,11 @@
                 thumb: './jpg/thumb/夜间独行.jpg',
                 origin: './jpg/origin/夜间独行.jpg',
                 description: '哈哈'
+            },
+            {
+                thumb: './jpg/thumb/世纪公园.jpg',
+                origin: './jpg/origin/世纪公园.jpg',
+                description: '锦瑟无端五十弦，一弦一柱思华年'
             }
         ];
 
@@ -1021,6 +1029,18 @@
             console.log('页面加载完成，开始渲染画廊...');
             renderGallery();
         });
+        document.addEventListener('DOMContentLoaded', function () {
+        const bgMusic = document.getElementById('bgMusic');
+    
+        // 尝试自动播放
+        bgMusic.volume = 0.5; // 音量 0~1
+        bgMusic.play().catch(() => {
+            // 浏览器禁止自动播放时，等用户第一次点击再播放
+            document.body.addEventListener('click', () => {
+                bgMusic.play();
+            }, { once: true });
+        });
+});
     </script>
 </body>
 </html>
