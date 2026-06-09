@@ -428,14 +428,21 @@
         <button class="nav-btn next" onclick="changeImage(1)">❯</button>
         
         <div class="modal-content">
-            <div class="modal-loading" id="modalLoading">
-                <div class="loading"></div>
-                <div class="loading-text">加载高清图中...</div>
-            </div>
-            <div class="modal-image-container" id="imageContainer">
-                <img class="modal-image" id="modalImage" src="" alt="">
+        <div class="modal-loading" id="modalLoading">
+            <div class="loading"></div>
+            <div class="loading-text">加载高清图中...</div>
+        </div>
+    
+        <div class="modal-image-container" id="imageContainer">
+            <img class="modal-image" id="modalImage" src="" alt="">
+        </div>
+    
+        <!-- ✅ 新增：图片描述 -->
+        <div class="modal-info">
+            <div class="modal-description" id="modalDescription">
             </div>
         </div>
+</div>
         
         <!-- <div class="hint">
             💡 鼠标滚轮缩放 | 左右滑动切换 | 双击重置 | 拖拽移动
@@ -779,8 +786,13 @@
         // ============================================================
         function updateModalContent() {
             const data = imageData[currentIndex];
+        
             document.getElementById('currentImageIndex').textContent = currentIndex + 1;
             document.getElementById('totalImages').textContent = imageData.length;
+        
+            // ✅ 更新图片描述
+            document.getElementById('modalDescription').textContent = data.description || '';
+        
             applyTransform();
         }
 
